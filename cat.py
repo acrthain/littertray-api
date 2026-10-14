@@ -6,8 +6,10 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class Cat(Base):
     __tablename__ = "cat"
