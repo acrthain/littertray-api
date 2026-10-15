@@ -5,10 +5,7 @@ from cat import Cat, Base
 from tray_visit import TrayVisit
 import os
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql+psycopg2://postgres:password@localhost:5432/postgres",
-)
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 
 class Engine():
