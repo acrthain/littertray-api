@@ -25,6 +25,7 @@ class Engine():
         stmt = select(TrayVisit)  # build a query to select all tray visits
         tray_visits = []  # empty list to store the results
         for tray_visit in self.session.scalars(stmt):  # loop through each visit returned
+            cat_id = TrayVisit
             tray_visits.append(tray_visit)  # add it to the list
         return tray_visits  # send the list back to the endpoint
 

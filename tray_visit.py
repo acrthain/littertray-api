@@ -10,8 +10,8 @@ class TrayVisit(Base):
     time: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
     visit_type: Mapped[str] = mapped_column(Text)
     cat_weight: Mapped[float] = mapped_column(Float)
-    cat_id: Mapped[int] = mapped_column(Integer, ForeignKey("cat.id"))
-    cat: Mapped[Cat] = relationship("Cat")
+    cat_id: Mapped[int] = mapped_column(Integer, foreign_key=True)
+    # cat: Mapped[Cat] = relationship("Cat")
 
     def __repr__(self) -> str:
-        return f"TrayVisit(id={self.id!r}, cat_id={self.cat_id!r}, visit_type={self.visit_type!r}, cat_weight={self.cat_weight!r}, time={self.time!r})"
+        return f"TrayVisit(id={self.id!r}, visit_type={self.visit_type!r}, cat_weight={self.cat_weight!r}, time={self.time!r})"
