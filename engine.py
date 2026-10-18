@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from cat import Cat, Base
 from tray_visit import TrayVisit
+from tray_visit_statistics import TrayVisitStatistics
 import os
 
 DATABASE_URL = os.environ["DATABASE_URL"]
@@ -25,7 +26,8 @@ class Engine():
         stmt = select(TrayVisit)  # build a query to select all tray visits
         tray_visits = []  # empty list to store the results
         for tray_visit in self.session.scalars(stmt):  # loop through each visit returned
-            cat_id = TrayVisit
+            cat = self.session.get(Cat, tray_visit.cat_id)
+            tray_visit.cat_name = cat.name
             tray_visits.append(tray_visit)  # add it to the list
         return tray_visits  # send the list back to the endpoint
 
@@ -60,3 +62,19 @@ class Engine():
         self.session.delete(tray_visit)  # queue it up to be deleted
         self.session.commit()  # actually delete it from the database
         return True  # signal that the deletion was successful
+
+    def all_tray_visit_statistics(self):
+        all_tray_visits = self.session.query(TrayVisit).all()
+
+        visit_counts = {}
+        for tray_visit in all_tray_visits:
+            if tray_visit.cat_id in visit_counts:
+                visit_counts[tray_visit.cat_id] += 1
+            else:
+                visit_counts[tray_visit.cat_id] = 1
+
+        statistics = []
+        for cat in self.session.query(Cat).all():
+            total = visit_counts.get(cat.id, 0)
+            statistics.append(TrayVisitStatistics(cat.name, total))
+        return statistics

@@ -28,7 +28,7 @@ class TrayVisitOut(BaseModel):
     time: datetime
     visit_type: str
     cat_weight: float
-    cat: CatOut
+    cat_name: str
 
 
 class TrayVisitIn(BaseModel):
@@ -37,7 +37,13 @@ class TrayVisitIn(BaseModel):
     cat_id: int
 
 
-@app.get("/allcats", response_model=list[CatOut])
+class TrayVisitStatisticsOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    cat_name: str
+    total_visits: int
+
+
+@app.get("/cats", response_model=list[CatOut])
 async def all_cats():
     engine = Engine()
     return engine.print_cats()
@@ -57,7 +63,7 @@ async def delete_cat(cat_id: int):
     return {"message": f"Cat {cat_id} deleted"}
 
 
-@app.get("/alltrayvisits", response_model=list[TrayVisitOut])
+@app.get("/tray-visits", response_model=list[TrayVisitOut])
 async def all_tray_visits():
     engine = Engine()
     return engine.print_tray_visits()
@@ -75,3 +81,9 @@ async def delete_tray_visit(tray_visit_id: int):
     if not engine.delete_tray_visit(tray_visit_id):
         raise HTTPException(status_code=404, detail=f"Tray visit {tray_visit_id} not found")
     return {"message": f"Tray visit {tray_visit_id} deleted"}
+
+
+@app.get("/tray-visit-statistics", response_model=list[TrayVisitStatisticsOut])
+async def tray_visit_statistics():
+    engine = Engine()
+    return engine.all_tray_visit_statistics()
